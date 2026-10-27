@@ -22,9 +22,3 @@ For XInput-only games such as Bully, set the profile's emulated controller to **
 DS4Windows maps the controller as usual; the script then runs on that mapped state, on its own 10 ms
 cycle like a Zen (`vm_tctrl` changes it), and every report sent to the virtual controller carries the
 latest script output. Profiles without a `.gpc` file are untouched.
-
-## Anti-cheat
-
-While a known anti-cheat process runs (EasyAntiCheat, BattlEye, Vanguard, EA, FACEIT, GameGuard,
-XIGNCODE, Call of Duty), GPC scripts switch off and stay off until DS4Windows restarts. DS4Windows itself
-keeps working normally. The list is in `DS4Windows\DS4Control\Gpc\AntiCheatGuard.cs` and is not complete.

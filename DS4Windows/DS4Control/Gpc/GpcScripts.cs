@@ -7,41 +7,16 @@ namespace DS4Windows.DS4Control.GpcScripting
 {
     /// <summary>
     /// Per-slot GPC scripts. A profile named "Bully" runs Profiles\Bully.gpc when that file exists,
-    /// so Auto Profiles decide when a script is active. Scripts (and only scripts) switch off while
-    /// a known anti-cheat process runs; DS4Windows itself keeps working.
+    /// so Auto Profiles decide when a script is active.
     /// </summary>
     public static class GpcScripts
     {
         static readonly GpcScriptHost[] hosts = new GpcScriptHost[Global.MAX_DS4_CONTROLLER_COUNT];
         static readonly string[] loadedFor = new string[Global.MAX_DS4_CONTROLLER_COUNT];
         static readonly object gate = new object();
-        static AntiCheatGuard guard;
-        static volatile string blockedReason;
 
         public static string ScriptPathFor(string profileName) =>
             Path.Combine(Global.appdatapath, "Profiles", profileName + ".gpc");
-
-        /// <summary>Starts the anti-cheat check. Safe to call more than once.</summary>
-        public static void StartGuard()
-        {
-            lock (gate)
-            {
-                if (guard != null) return;
-                guard = new AntiCheatGuard(new GuardState());
-                guard.Tripped += reason =>
-                {
-                    if (blockedReason == null)
-                    {
-                        string msg = $"GPC scripts turned off: {reason}. They stay off until DS4Windows restarts.";
-                        AppLogger.LogToGui(msg, true);
-                        AppLogger.LogToTray(msg, true, ignoreSettings: true);
-                    }
-                    blockedReason = reason;
-                };
-                blockedReason = guard.CheckNow();
-                guard.Start();
-            }
-        }
 
         /// <summary>Forget loaded scripts so edited .gpc files are picked up (called when the service starts).</summary>
         public static void Reset()
@@ -56,7 +31,7 @@ namespace DS4Windows.DS4Control.GpcScripting
         /// <summary>Called from the report path. Returns the state to send: the script's output, or the input unchanged.</summary>
         public static DS4State Apply(int ind, DS4State state)
         {
-            if (blockedReason != null || ind < 0 || ind >= hosts.Length) return state;
+            if (ind < 0 || ind >= hosts.Length) return state;
 
             string profile = Global.useTempProfile[ind] ? Global.tempprofilename[ind] : Global.ProfilePath[ind];
             if (!string.Equals(profile, loadedFor[ind], StringComparison.Ordinal))

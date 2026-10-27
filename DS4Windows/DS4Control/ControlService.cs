@@ -1561,9 +1561,8 @@ namespace DS4Windows
         public bool Start(bool showlog = true)
         {
             inServiceTask = true;
-            // softwarezen: pick up edited .gpc files and watch for anti-cheat processes
+            // softwarezen: pick up edited .gpc files
             GpcScripts.Reset();
-            GpcScripts.StartGuard();
             StartViGEm();
             if (vigemTestClient != null)
             //if (x360Bus.Open() && x360Bus.Start())
