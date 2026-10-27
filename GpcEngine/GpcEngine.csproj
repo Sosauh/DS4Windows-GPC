@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The softwarezen GPC engine (lexer, parser, compiler, deterministic VM). No Windows dependencies. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Gpc.Engine</AssemblyName>
+    <RootNamespace>Gpc.Engine</RootNamespace>
+  </PropertyGroup>
+
+</Project>

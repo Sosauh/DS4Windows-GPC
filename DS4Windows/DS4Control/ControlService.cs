@@ -31,6 +31,7 @@ using SharpOSC;
 using static DS4Windows.Global;
 using DS4WinWPF.DS4Control;
 using DS4Windows.DS4Control;
+using DS4Windows.DS4Control.GpcScripting;
 using Nefarius.ViGEm.Client.Targets.DualShock4;
 using static DS4Windows.Util;
 using System.Runtime.InteropServices;
@@ -1560,6 +1561,9 @@ namespace DS4Windows
         public bool Start(bool showlog = true)
         {
             inServiceTask = true;
+            // softwarezen: pick up edited .gpc files and watch for anti-cheat processes
+            GpcScripts.Reset();
+            GpcScripts.StartGuard();
             StartViGEm();
             if (vigemTestClient != null)
             //if (x360Bus.Open() && x360Bus.Start())
@@ -2736,8 +2740,11 @@ namespace DS4Windows
                     }
 
                     cState = tempMapState;
-                    
+
                 }
+
+                // softwarezen: run the profile's GPC script, if it has one (Profiles\<profile>.gpc)
+                cState = GpcScripts.Apply(ind, cState);
 
                 if (!useDInputOnly[ind])
                 {
