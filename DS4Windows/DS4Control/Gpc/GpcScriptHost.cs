@@ -25,11 +25,28 @@ namespace DS4Windows.DS4Control.GpcScripting
         int savedVersion;
         long changedAt;
 
+        // the screen as it stood at the end of the latest cycle, so the window never shows a half-drawn frame
+        readonly byte[] screen = new byte[global::Gpc.Engine.Runtime.Oled.Width * global::Gpc.Engine.Runtime.Oled.Height];
+        int screenSourceVersion = -1;
+        int screenVersion;
+
         public string ScriptPath { get; }
         public string MemoryPath => MemoryPathFor(ScriptPath);
         public long FaultCount => machine.FaultCount;
-        /// <summary>The script's 128x64 screen, shown by the GPC screen window.</summary>
+        /// <summary>The script's 128x64 screen. It changes while a cycle draws; the window uses <see cref="CopyScreen"/>.</summary>
         public global::Gpc.Engine.Runtime.Oled Oled => machine.Oled;
+
+        /// <summary>Copies the last complete frame into <paramref name="dest"/> when it differs from <paramref name="version"/>. Returns true if it copied.</summary>
+        public bool CopyScreen(byte[] dest, ref int version)
+        {
+            lock (gate)
+            {
+                if (version == screenVersion) return false;
+                Buffer.BlockCopy(screen, 0, dest, 0, screen.Length);
+                version = screenVersion;
+                return true;
+            }
+        }
 
         public static string MemoryPathFor(string scriptPath) => scriptPath + ".mem";
 
@@ -72,6 +89,13 @@ namespace DS4Windows.DS4Control.GpcScripting
                     int intervalMs = machine.RunCycle();
                     nextCycle += intervalMs * Stopwatch.Frequency / 1000;
                     ran++;
+                }
+
+                if (machine.Oled.Version != screenSourceVersion)
+                {
+                    machine.Oled.Pixels.CopyTo(screen);
+                    screenSourceVersion = machine.Oled.Version;
+                    screenVersion++;
                 }
 
                 // save memory once the script has stopped changing it for a moment (menus change it per press)

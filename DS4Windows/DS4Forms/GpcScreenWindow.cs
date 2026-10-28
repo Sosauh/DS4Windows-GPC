@@ -20,7 +20,7 @@ namespace DS4WinWPF.DS4Forms
         readonly byte[] frame = new byte[W * H];
         readonly TextBlock status = new TextBlock { Margin = new Thickness(6, 4, 6, 6) };
         readonly DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(33) };
-        object lastOled;
+        GpcScriptHost lastHost;
         int lastVersion = -1;
 
         public GpcScreenWindow(int slot)
@@ -59,25 +59,26 @@ namespace DS4WinWPF.DS4Forms
             if (host == null)
             {
                 status.Text = $"No GPC script running on controller {slot + 1}.";
-                if (lastOled != null)
+                if (lastHost != null)
                 {
                     Array.Clear(frame, 0, frame.Length);
                     bitmap.WritePixels(new Int32Rect(0, 0, W, H), frame, W, 0);
-                    lastOled = null;
+                    lastHost = null;
                 }
                 return;
             }
 
-            var oled = host.Oled;
-            status.Text = $"{System.IO.Path.GetFileName(host.ScriptPath)} on controller {slot + 1}";
-            if (ReferenceEquals(oled, lastOled) && oled.Version == lastVersion)
+            if (!ReferenceEquals(host, lastHost))
+            {
+                status.Text = $"{GpcScripts.DisplayNameFor(host.ScriptPath)} on controller {slot + 1}";
+                lastHost = host;
+                lastVersion = -1;
+            }
+            if (!host.CopyScreen(frame, ref lastVersion))
                 return;
 
-            lastOled = oled;
-            lastVersion = oled.Version;
-            ReadOnlySpan<byte> pixels = oled.Pixels;
             for (int i = 0; i < frame.Length; i++)
-                frame[i] = pixels[i] != 0 ? (byte)255 : (byte)0;
+                frame[i] = frame[i] != 0 ? (byte)255 : (byte)0;
             bitmap.WritePixels(new Int32Rect(0, 0, W, H), frame, W, 0);
         }
     }
