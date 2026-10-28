@@ -13,7 +13,16 @@ This build can run a Zen-style GPC script per profile.
 
 Edited a script file by hand? Choose it again, or stop and start DS4Windows, to reload it.
 
-Example scripts are in `extras\gpc`: `turbo_cross.gpc` (hold X for 10 presses a second) and
+## Screen (OLED)
+
+Scripts can draw on a 128x64 screen like the Zen's: `cls_oled`, `pixel_oled`, `line_oled`, `rect_oled`,
+`circle_oled`, `print`, `putc_oled`/`puts_oled` and `image_oled`. Press **Show screen** in the profile's GPC
+Script box to open it in a window (it stays on top while you play; untick "Always on top" to change that).
+`const string NAMES[] = { "A", "B" };` works for menus: `print(x, y, OLED_FONT_SMALL, OLED_WHITE, NAMES[i])`.
+Font sizes other than LARGE (16x26) are a best guess until measured on a Zen.
+
+Example scripts are in `extras\gpc`: `settings_menu.gpc` (turbo + anti-drift with an on-screen menu: hold L2
+and press OPTIONS), `turbo_cross.gpc` (hold X for 10 presses a second) and
 `anti_drift.gpc` (radial deadzone with rescale).
 
 For XInput-only games such as Bully, set the profile's emulated controller to **Xbox 360**.

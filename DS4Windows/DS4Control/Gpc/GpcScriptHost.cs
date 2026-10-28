@@ -19,6 +19,8 @@ namespace DS4Windows.DS4Control.GpcScripting
 
         public string ScriptPath { get; }
         public long FaultCount => machine.FaultCount;
+        /// <summary>The script's 128x64 screen, shown by the GPC screen window.</summary>
+        public global::Gpc.Engine.Runtime.Oled Oled => machine.Oled;
 
         public GpcScriptHost(CompiledScript script, string path)
         {

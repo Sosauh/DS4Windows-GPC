@@ -2024,6 +2024,8 @@
                                 <StackPanel Orientation="Horizontal" Margin="4,0,0,0">
                                     <Button x:Name="gpcChooseBtn" Content="Choose script..." Padding="8,2" Click="GpcChooseBtn_Click" />
                                     <Button x:Name="gpcRemoveBtn" Content="Remove" Padding="8,2" Margin="8,0,0,0" Click="GpcRemoveBtn_Click" />
+                                    <Button x:Name="gpcScreenBtn" Content="Show screen" Padding="8,2" Margin="8,0,0,0" Click="GpcScreenBtn_Click"
+                                        ToolTip="The script's 128x64 screen (cls_oled, print, rect_oled ...), live" />
                                 </StackPanel>
                                 <TextBlock Margin="4,6,4,0" TextWrapping="Wrap" Opacity="0.75"
                                     Text="Runs on this profile's output on a 10 ms cycle. Takes effect when you press Save or Apply; errors show in the Log tab." />

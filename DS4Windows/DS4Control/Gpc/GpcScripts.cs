@@ -18,6 +18,10 @@ namespace DS4Windows.DS4Control.GpcScripting
         public static string ScriptPathFor(string profileName) =>
             Path.Combine(Global.appdatapath, "Profiles", profileName + ".gpc");
 
+        /// <summary>The running script for a controller slot, or null.</summary>
+        public static GpcScriptHost HostFor(int ind) =>
+            ind >= 0 && ind < hosts.Length ? hosts[ind] : null;
+
         /// <summary>Forget loaded scripts so edited .gpc files are picked up (called when the service starts).</summary>
         public static void Reset()
         {

@@ -82,6 +82,13 @@ namespace DS4WinWPF.DS4Forms
             GpcRefreshStatus();
         }
 
+        private void GpcScreenBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // the test-profile slot has no running controller; show controller 1 instead
+            int slot = deviceNum < Global.MAX_DS4_CONTROLLER_COUNT ? deviceNum : 0;
+            new GpcScreenWindow(slot).Show();
+        }
+
         /// <summary>Called once the profile has been saved under <paramref name="newName"/>.</summary>
         private void GpcApplyAfterSave(string oldName, string newName)
         {
