@@ -33,7 +33,7 @@ namespace DS4WinWPF.DS4Forms
             else if (gpcPendingRemove)
                 gpcScriptStatusTxt.Text = "None (script removed after Save)";
             else if (hasScript)
-                gpcScriptStatusTxt.Text = $"{name}.gpc";
+                gpcScriptStatusTxt.Text = GpcScripts.DisplayNameFor(GpcScripts.ScriptPathFor(name));
             else
                 gpcScriptStatusTxt.Text = "None";
 
@@ -98,6 +98,8 @@ namespace DS4WinWPF.DS4Forms
             bool renamed = old != null && !string.Equals(oldName, newName, StringComparison.Ordinal);
             string destMem = GpcScriptHost.MemoryPathFor(dest);
             string oldMem = old == null ? null : GpcScriptHost.MemoryPathFor(old);
+            string destName = GpcScripts.NamePathFor(dest);
+            string oldNameFile = old == null ? null : GpcScripts.NamePathFor(old);
 
             GpcScripts.Reset(); // saves script memory first, so the moves below carry the latest values
 
@@ -107,6 +109,8 @@ namespace DS4WinWPF.DS4Forms
                 {
                     if (File.Exists(dest)) File.Delete(dest);
                     if (File.Exists(destMem)) File.Delete(destMem);
+                    if (File.Exists(destName)) File.Delete(destName);
+                    if (renamed && File.Exists(oldNameFile)) File.Delete(oldNameFile);
                     if (renamed && File.Exists(old)) File.Delete(old);
                     if (renamed && File.Exists(oldMem)) File.Delete(oldMem);
                 }
@@ -116,11 +120,14 @@ namespace DS4WinWPF.DS4Forms
                     if (!string.Equals(System.IO.Path.GetFullPath(gpcPendingSource), System.IO.Path.GetFullPath(dest), StringComparison.OrdinalIgnoreCase))
                         File.Copy(gpcPendingSource, dest, overwrite: true);
                     if (renamed && File.Exists(oldMem)) File.Move(oldMem, destMem, overwrite: true);
+                    if (renamed && File.Exists(oldNameFile)) File.Delete(oldNameFile);
+                    File.WriteAllText(destName, System.IO.Path.GetFileName(gpcPendingSource));
                 }
                 else if (renamed && File.Exists(old))
                 {
                     File.Move(old, dest, overwrite: true); // the script and its memory follow a renamed profile
                     if (File.Exists(oldMem)) File.Move(oldMem, destMem, overwrite: true);
+                    if (File.Exists(oldNameFile)) File.Move(oldNameFile, destName, overwrite: true);
                 }
             }
             catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)

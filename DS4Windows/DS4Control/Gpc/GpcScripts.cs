@@ -18,6 +18,21 @@ namespace DS4Windows.DS4Control.GpcScripting
         public static string ScriptPathFor(string profileName) =>
             Path.Combine(Global.appdatapath, "Profiles", profileName + ".gpc");
 
+        /// <summary>Holds the name of the file the user picked; the script itself is stored as &lt;profile&gt;.gpc.</summary>
+        public static string NamePathFor(string scriptPath) => scriptPath + ".name";
+
+        /// <summary>The picked file's name (e.g. "wolf-warrior-retribution.gpc"), or the stored file's name.</summary>
+        public static string DisplayNameFor(string scriptPath)
+        {
+            try
+            {
+                string n = File.Exists(NamePathFor(scriptPath)) ? File.ReadAllText(NamePathFor(scriptPath)).Trim() : "";
+                if (n.Length > 0) return n;
+            }
+            catch (Exception e) when (e is IOException || e is UnauthorizedAccessException) { }
+            return Path.GetFileName(scriptPath);
+        }
+
         /// <summary>The running script for a controller slot, or null.</summary>
         public static GpcScriptHost HostFor(int ind) =>
             ind >= 0 && ind < hosts.Length ? hosts[ind] : null;
@@ -69,16 +84,17 @@ namespace DS4Windows.DS4Control.GpcScripting
                     return;
                 }
 
+                string shown = DisplayNameFor(path);
                 foreach (var d in result.Diagnostics)
-                    AppLogger.LogToGui($"GPC {Path.GetFileName(path)}:{d}", d.Severity == Severity.Error);
+                    AppLogger.LogToGui($"GPC {shown}:{d}", d.Severity == Severity.Error);
 
                 if (!result.Success)
                 {
-                    AppLogger.LogToGui($"GPC: {Path.GetFileName(path)} has errors; controller {ind + 1} runs without a script.", true);
+                    AppLogger.LogToGui($"GPC: {shown} has errors; controller {ind + 1} runs without a script.", true);
                     return;
                 }
                 hosts[ind] = new GpcScriptHost(result.Script, path);
-                AppLogger.LogToGui($"GPC: controller {ind + 1} running {Path.GetFileName(path)}", false);
+                AppLogger.LogToGui($"GPC: controller {ind + 1} running {shown} (profile \"{profile}\")", false);
             }
         }
     }
