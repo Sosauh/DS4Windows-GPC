@@ -95,7 +95,7 @@ namespace DS4WinWPF.DS4Control.DTOXml
         }
 
         [XmlIgnore]
-        public bool UseExclusiveMode { get; private set; }
+        public bool UseExclusiveMode { get; private set; } = true;
 
         [XmlIgnore]
         public bool StartMinimized { get; private set; }

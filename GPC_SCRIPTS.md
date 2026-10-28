@@ -35,6 +35,10 @@ latest script output. Profiles without a `.gpc` file are untouched.
 
 ## Hiding the real controller
 
+"Hide DS4 Controller" (exclusive mode, Settings tab) is on by default in this build: DS4Windows opens the
+controller so no other app can read it, and the Log says "Using Exclusive Mode". Start DS4Windows before games and
+browsers; if another app already has the controller open, close it and replug. HidHide below is a second layer.
+
 With HidHide installed (1.5.230 or newer), this build hides each connected controller from games automatically, so
 games see only the virtual pad. DS4Windows keeps reading it because it adds itself to HidHide's allowed apps at
 startup. HidHide applies the change when the controller reconnects: unplug and replug it once after the first run.
