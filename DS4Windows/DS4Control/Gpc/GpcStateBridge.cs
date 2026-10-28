@@ -49,6 +49,7 @@ namespace DS4Windows.DS4Control.GpcScripting
             slots[Identifiers.CROSS] = Btn(s.Cross);
             slots[Identifiers.SQUARE] = Btn(s.Square);
             slots[Identifiers.TOUCH] = Btn(s.TouchButton);
+            slots[Identifiers.MUTE] = Btn(s.Mute);
         }
 
         /// <summary>Applies the script's report onto <paramref name="dest"/>, which already holds a copy of the input (motion, touch and battery stay as they were).</summary>
@@ -79,6 +80,7 @@ namespace DS4Windows.DS4Control.GpcScripting
             dest.Square = o[Identifiers.SQUARE] > 0;
             dest.TouchButton = o[Identifiers.TOUCH] > 0;
             dest.OutputTouchButton = dest.TouchButton;
+            dest.Mute = o[Identifiers.MUTE] > 0;
         }
     }
 }
