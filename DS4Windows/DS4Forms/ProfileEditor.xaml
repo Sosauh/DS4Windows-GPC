@@ -2015,6 +2015,20 @@
                                   Margin="0,8,0,0" />-->
                             </StackPanel>
                         </GroupBox>
+                        <GroupBox Header="GPC Script" MinHeight="50" Margin="4,4,4,0" Padding="0,4,0,4">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                    <Label Content="Script:" />
+                                    <TextBlock x:Name="gpcScriptStatusTxt" Text="None" VerticalAlignment="Center" TextWrapping="Wrap" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="4,0,0,0">
+                                    <Button x:Name="gpcChooseBtn" Content="Choose script..." Padding="8,2" Click="GpcChooseBtn_Click" />
+                                    <Button x:Name="gpcRemoveBtn" Content="Remove" Padding="8,2" Margin="8,0,0,0" Click="GpcRemoveBtn_Click" />
+                                </StackPanel>
+                                <TextBlock Margin="4,6,4,0" TextWrapping="Wrap" Opacity="0.75"
+                                    Text="Runs on this profile's output on a 10 ms cycle. Takes effect when you press Save or Apply; errors show in the Log tab." />
+                            </StackPanel>
+                        </GroupBox>
                         <GroupBox Header="{lex:Loc Rumble}" MinHeight="50" Margin="4,4,4,0" Padding="0,4,0,4">
                             <StackPanel>
                             <UniformGrid Rows="1" Columns="3">

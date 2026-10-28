@@ -4,13 +4,14 @@ This build can run a Zen-style GPC script per profile.
 
 ## Use it
 
-1. Put a script in DS4Windows' `Profiles` folder, named after the profile: profile **Bully** runs
-   `Profiles\Bully.gpc`. (Open the folder from the tray menu, "Open Program Folder", then `Profiles`.)
+1. Open the profile in the editor, go to the **Other** tab, and under **GPC Script** press
+   **Choose script...**, then **Save**. (It is stored as `Profiles\<profile>.gpc`, so you can also drop a file
+   there by hand.) Scripts with errors are rejected right away with the error lines.
 2. Select that profile for your controller, or let **Auto Profiles** select it when `Bully.exe` runs.
    When the game closes, Auto Profiles switches back and the script stops with it.
 3. Check the Log tab: it says `GPC: controller 1 running Bully.gpc`, or lists compile errors with line numbers.
 
-Edited a script? Stop and start DS4Windows (or switch profile away and back) to reload it.
+Edited a script file by hand? Choose it again, or stop and start DS4Windows, to reload it.
 
 Example scripts are in `extras\gpc`: `turbo_cross.gpc` (hold X for 10 presses a second) and
 `anti_drift.gpc` (radial deadzone with rescale).

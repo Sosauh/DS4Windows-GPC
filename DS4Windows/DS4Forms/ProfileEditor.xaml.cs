@@ -662,6 +662,7 @@ namespace DS4WinWPF.DS4Forms
             }
 
             ColorByBatteryPerCheck();
+            GpcResetPending();
 
             if (device < Global.TEST_PROFILE_INDEX)
             {
@@ -912,6 +913,7 @@ namespace DS4WinWPF.DS4Forms
             }
 
             string temp = profileNameTxt.Text;
+            string gpcOldName = currentProfile?.Name;
             if (!string.IsNullOrWhiteSpace(temp) &&
                 temp.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) == -1)
             {
@@ -955,6 +957,11 @@ namespace DS4WinWPF.DS4Forms
             {
                 MessageBox.Show(Properties.Resources.ValidName, Properties.Resources.NotValid,
                     MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+
+            if (result)
+            {
+                GpcApplyAfterSave(gpcOldName, temp);
             }
 
             return result;
