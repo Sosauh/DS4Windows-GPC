@@ -56,7 +56,7 @@ namespace DS4Windows.DS4Control.GpcScripting
                     }
 
                     return listed ? null :
-                        $"{device.DisplayName} is now hidden from games (HidHide). Restart a game or browser that already had it open.";
+                        $"{device.DisplayName} is now hidden from games (HidHide entry {instanceId}). Unplug and replug it, and restart a game or browser that already had it open.";
                 }
             }
         }
