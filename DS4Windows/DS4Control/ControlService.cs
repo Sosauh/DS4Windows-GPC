@@ -704,7 +704,11 @@ namespace DS4Windows
                     {
                         LogDebug($"{ExeName} not found in HidHide whitelist. Adding to list");
                         dosPaths.Add(realPath);
-                        hidHideDevice.SetWhitelist(dosPaths);
+                        if (!hidHideDevice.SetWhitelist(dosPaths))
+                        {
+                            // softwarezen: without this entry, hidden controllers are hidden from DS4Windows too
+                            LogDebug($"Could not add {ExeName} to HidHide's application list. Run DS4Windows as administrator so it can hide the controller from games.", true);
+                        }
                     }
                     if (exists && !AddExe)
                     {
