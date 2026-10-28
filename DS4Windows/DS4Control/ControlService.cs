@@ -1801,8 +1801,6 @@ namespace DS4Windows
                 runHotPlug = false;
                 inServiceTask = true;
                 PreServiceStop?.Invoke(this, EventArgs.Empty);
-                // softwarezen: give the real controllers back to games
-                GpcHidHide.RestoreAll(msg => LogDebug(msg));
 
                 if (showlog)
                     LogDebug(DS4WinWPF.Properties.Resources.StoppingX360);

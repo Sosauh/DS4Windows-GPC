@@ -8,14 +8,13 @@ namespace DS4Windows.DS4Control.GpcScripting
     /// <summary>
     /// Hides connected controllers from games through HidHide, so games see only the virtual pad.
     /// DS4Windows stays able to read them because it whitelists itself in HidHide at startup.
-    /// Only entries added here are removed again when the service stops; the user's own HidHide
-    /// configuration is left alone.
+    /// Entries stay in place when DS4Windows stops: HidHide applies changes only when a controller
+    /// reconnects, so undoing them on every stop left the controller visible until the next replug.
+    /// To use the controller directly, untick "Enable device hiding" in HidHide.
     /// </summary>
     public static class GpcHidHide
     {
         static readonly object gate = new object();
-        static readonly HashSet<string> addedInstances = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        static bool turnedHidingOn;
 
         /// <summary>Adds the device to HidHide's hidden list and turns hiding on. Returns a log line, or null.</summary>
         public static string HideFromGames(DS4Device device)
@@ -45,48 +44,17 @@ namespace DS4Windows.DS4Control.GpcScripting
                         hidden.Add(instanceId);
                         if (!hidHide.SetBlacklist(hidden))
                             return "Could not add the controller to HidHide's hidden list (DS4Windows may need to run as administrator).";
-                        addedInstances.Add(instanceId);
                     }
 
                     if (!hidHide.GetActiveState())
                     {
                         if (!hidHide.SetActiveState(true))
                             return "Could not turn HidHide hiding on (DS4Windows may need to run as administrator).";
-                        turnedHidingOn = true;
                     }
 
                     return listed ? null :
                         $"{device.DisplayName} is now hidden from games (HidHide entry {instanceId}). Unplug and replug it, and restart a game or browser that already had it open.";
                 }
-            }
-        }
-
-        /// <summary>Undoes only what <see cref="HideFromGames"/> added, so games see the real controller again.</summary>
-        public static void RestoreAll(Action<string> log)
-        {
-            if (!Global.hidHideInstalled)
-                return;
-
-            lock (gate)
-            {
-                if (addedInstances.Count == 0 && !turnedHidingOn)
-                    return;
-
-                using (HidHideAPIDevice hidHide = new HidHideAPIDevice())
-                {
-                    if (!hidHide.IsOpen())
-                        return;
-
-                    List<string> hidden = hidHide.GetBlacklist();
-                    hidden.RemoveAll(h => addedInstances.Contains(h));
-                    hidHide.SetBlacklist(hidden);
-                    if (turnedHidingOn && hidden.Count == 0)
-                        hidHide.SetActiveState(false);
-                }
-
-                log?.Invoke("Controllers are visible to games again (HidHide entries added by DS4Windows removed).");
-                addedInstances.Clear();
-                turnedHidingOn = false;
             }
         }
     }

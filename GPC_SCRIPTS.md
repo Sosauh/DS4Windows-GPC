@@ -35,9 +35,9 @@ latest script output. Profiles without a `.gpc` file are untouched.
 
 ## Hiding the real controller
 
-With HidHide installed, this build hides each connected controller from games automatically, so games see only
-the virtual pad. DS4Windows keeps reading it because it adds itself to HidHide's allowed apps at startup. When
-DS4Windows stops (Stop button or closing it), the entries it added are removed, so the real controller works in
-games again. Your own HidHide settings are left as they are. HidHide applies the change when the controller reconnects: unplug and replug it once. A game or browser that already
-had it open keeps seeing it until it is restarted. Use HidHide 1.5.230 or newer. If the Log tab says HidHide could not be changed, run DS4Windows as
-administrator once.
+With HidHide installed (1.5.230 or newer), this build hides each connected controller from games automatically, so
+games see only the virtual pad. DS4Windows keeps reading it because it adds itself to HidHide's allowed apps at
+startup. HidHide applies the change when the controller reconnects: unplug and replug it once after the first run.
+A game or browser that already had it open keeps seeing it until it is restarted. The hiding stays in place when
+DS4Windows closes; to use the controller directly, untick "Enable device hiding" in HidHide. If the Log tab says
+HidHide could not be changed, run DS4Windows as administrator once.
