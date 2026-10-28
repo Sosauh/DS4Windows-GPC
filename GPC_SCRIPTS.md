@@ -32,3 +32,12 @@ For XInput-only games such as Bully, set the profile's emulated controller to **
 DS4Windows maps the controller as usual; the script then runs on that mapped state, on its own 10 ms
 cycle like a Zen (`vm_tctrl` changes it), and every report sent to the virtual controller carries the
 latest script output. Profiles without a `.gpc` file are untouched.
+
+## Hiding the real controller
+
+With HidHide installed, this build hides each connected controller from games automatically, so games see only
+the virtual pad. DS4Windows keeps reading it because it adds itself to HidHide's allowed apps at startup. When
+DS4Windows stops (Stop button or closing it), the entries it added are removed, so the real controller works in
+games again. Your own HidHide settings are left as they are. A game or browser that already had the controller
+open keeps seeing it until it is restarted. If the Log tab says HidHide could not be changed, run DS4Windows as
+administrator once.

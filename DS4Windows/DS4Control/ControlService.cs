@@ -1801,6 +1801,8 @@ namespace DS4Windows
                 runHotPlug = false;
                 inServiceTask = true;
                 PreServiceStop?.Invoke(this, EventArgs.Empty);
+                // softwarezen: give the real controllers back to games
+                GpcHidHide.RestoreAll(msg => LogDebug(msg));
 
                 if (showlog)
                     LogDebug(DS4WinWPF.Properties.Resources.StoppingX360);
@@ -2150,6 +2152,14 @@ namespace DS4Windows
 
         private void BeginPrepareConnectedInputController(DS4Device device, bool showlog = false)
         {
+            // softwarezen: hide the real controller from games so only the virtual pad is seen
+            string hideLog = GpcHidHide.HideFromGames(device);
+            if (hideLog != null)
+            {
+                LogDebug(hideLog);
+                UpdateHidHideAttributes();
+            }
+
             if (hidDeviceHidingEnabled && CheckAffected(device))
             {
                 //device.CurrentExclusiveStatus = DS4Device.ExclusiveStatus.HidGuardAffected;
