@@ -1805,6 +1805,7 @@ namespace DS4Windows
                 runHotPlug = false;
                 inServiceTask = true;
                 PreServiceStop?.Invoke(this, EventArgs.Empty);
+                GpcScripts.Reset(); // softwarezen: saves script memory (set_pvar) before closing
 
                 if (showlog)
                     LogDebug(DS4WinWPF.Properties.Resources.StoppingX360);

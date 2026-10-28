@@ -5,6 +5,7 @@ using System.Windows;
 using Microsoft.Win32;
 using DS4Windows;
 using GpcScripts = DS4Windows.DS4Control.GpcScripting.GpcScripts;
+using GpcScriptHost = DS4Windows.DS4Control.GpcScripting.GpcScriptHost;
 
 namespace DS4WinWPF.DS4Forms
 {
@@ -95,22 +96,31 @@ namespace DS4WinWPF.DS4Forms
             string dest = GpcScripts.ScriptPathFor(newName);
             string old = string.IsNullOrEmpty(oldName) ? null : GpcScripts.ScriptPathFor(oldName);
             bool renamed = old != null && !string.Equals(oldName, newName, StringComparison.Ordinal);
+            string destMem = GpcScriptHost.MemoryPathFor(dest);
+            string oldMem = old == null ? null : GpcScriptHost.MemoryPathFor(old);
+
+            GpcScripts.Reset(); // saves script memory first, so the moves below carry the latest values
 
             try
             {
                 if (gpcPendingRemove)
                 {
                     if (File.Exists(dest)) File.Delete(dest);
+                    if (File.Exists(destMem)) File.Delete(destMem);
                     if (renamed && File.Exists(old)) File.Delete(old);
+                    if (renamed && File.Exists(oldMem)) File.Delete(oldMem);
                 }
                 else if (gpcPendingSource != null)
                 {
+                    // memory is kept, as on a Zen slot: get_pvar's range and default guard against another script's values
                     if (!string.Equals(System.IO.Path.GetFullPath(gpcPendingSource), System.IO.Path.GetFullPath(dest), StringComparison.OrdinalIgnoreCase))
                         File.Copy(gpcPendingSource, dest, overwrite: true);
+                    if (renamed && File.Exists(oldMem)) File.Move(oldMem, destMem, overwrite: true);
                 }
                 else if (renamed && File.Exists(old))
                 {
-                    File.Move(old, dest, overwrite: true); // the script follows a renamed profile
+                    File.Move(old, dest, overwrite: true); // the script and its memory follow a renamed profile
+                    if (File.Exists(oldMem)) File.Move(oldMem, destMem, overwrite: true);
                 }
             }
             catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)

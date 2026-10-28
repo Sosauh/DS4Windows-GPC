@@ -27,6 +27,7 @@ namespace DS4Windows.DS4Control.GpcScripting
         {
             lock (gate)
             {
+                foreach (var h in hosts) h?.Flush();
                 Array.Clear(hosts, 0, hosts.Length);
                 Array.Clear(loadedFor, 0, loadedFor.Length);
             }
@@ -50,6 +51,7 @@ namespace DS4Windows.DS4Control.GpcScripting
             lock (gate)
             {
                 loadedFor[ind] = profile;
+                hosts[ind]?.Flush();
                 hosts[ind] = null;
                 if (profile.Length == 0) return;
 

@@ -27,6 +27,14 @@ and press OPTIONS), `turbo_cross.gpc` (hold X for 10 presses a second) and
 
 For XInput-only games such as Bully, set the profile's emulated controller to **Xbox 360**.
 
+## Saved settings (memory)
+
+Like a Zen, a script keeps settings with `set_pvar(SPVAR_1, value)` and reads them back with
+`get_pvar(SPVAR_1, min, max, default)` (also `set_bvar`/`get_bvar`). They are saved to `Profiles\<profile>.gpc.mem`
+half a second after the last change and when DS4Windows stops, so they survive restarts. Plain `int` variables
+start from their initial value every time the script loads, as on a Zen. Choosing a new script for a profile keeps
+its memory (get_pvar's range and default protect against another script's values); removing the script deletes it.
+
 ## How it fits
 
 DS4Windows maps the controller as usual; the script then runs on that mapped state, on its own 10 ms
