@@ -14,17 +14,18 @@ public static class Identifiers
     public const int RX = 9, RY = 10, LX = 11, LY = 12, UP = 13, DOWN = 14, LEFT = 15, RIGHT = 16;
     public const int TRIANGLE = 17, CIRCLE = 18, CROSS = 19, SQUARE = 20;
     public const int ACCX = 21, ACCY = 22, ACCZ = 23, GYROX = 24, GYROY = 25, GYROZ = 26;
-    public const int TOUCH = 27, TOUCHX = 28, TOUCHY = 29;
-    public const int TRACE_1 = 30; // UNVERIFIED: TRACE_1..TRACE_6 = 30..35
+    // published (guide.cronus.support PS4/PS5 identifier tables)
+    public const int TOUCH = 27, FINGER1X = 28, FINGER1Y = 29, FINGER1 = 30, FINGER2X = 31, FINGER2Y = 32, FINGER2 = 33;
+    public const int TRACE_1 = 38; // UNVERIFIED: no source gives TRACE_* numbers; 38..43 is a free range
     public const int TraceCount = 6;
-    public const int MUTE = 36;                                                  // UNVERIFIED
-    public const int PADDLE_1 = 37, PADDLE_2 = 38, PADDLE_3 = 39, PADDLE_4 = 40; // UNVERIFIED
+    public const int MUTE = 50;                                                  // published: PS5_MUTE
+    public const int PADDLE_1 = 34, PADDLE_2 = 35, PADDLE_3 = 36, PADDLE_4 = 37; // published: XB1_PR1, PR2, PL1, PL2
 
     public const int RUMBLE_A = 0, RUMBLE_B = 1, RUMBLE_RT = 2, RUMBLE_LT = 3; // UNVERIFIED
     public const int RumbleCount = 4;
 
     /// <summary>Buttons are 0/100 and triggers 0..100; these slots are signed axes.</summary>
-    public static bool IsAxis(int slot) => slot is RX or RY or LX or LY or (>= ACCX and <= GYROZ) or TOUCHX or TOUCHY;
+    public static bool IsAxis(int slot) => slot is RX or RY or LX or LY or (>= ACCX and <= GYROZ) or FINGER1X or FINGER1Y or FINGER2X or FINGER2Y;
 
     public static readonly IReadOnlyDictionary<string, int> Constants = Build();
 
@@ -53,17 +54,17 @@ public static class Identifiers
             ["BUTTON_MIN"] = 0, ["BUTTON_MAX"] = TRACE_1 + TraceCount - 1, ["BUTTON_MAX_EXTENDED"] = SlotCount - 1,
             ["VALUE_MIN"] = -100, ["VALUE_MAX"] = 100,
             ["TIME_MAX"] = 32767,
-            ["NOT_USE"] = 101, ["DZ_CIRCLE"] = 101,
+            ["NOT_USE"] = 0, ["DZ_CIRCLE"] = 101, ["ALL_REMAPS"] = -1, // cronus.support misc constants
             ["REMAP_NULL"] = -1,
             ["RUMBLE_A"] = RUMBLE_A, ["RUMBLE_B"] = RUMBLE_B, ["RUMBLE_RT"] = RUMBLE_RT, ["RUMBLE_LT"] = RUMBLE_LT,
             ["RUMBLE_MIN"] = 0, ["RUMBLE_MAX"] = RumbleCount - 1,
-            ["PS4_RED"] = 0, ["PS4_GREEN"] = 1, ["PS4_BLUE"] = 2,
-            ["LED_1"] = 0, ["LED_2"] = 1, ["LED_3"] = 2, ["LED_4"] = 3,
+            ["PS4_BLUE"] = 0, ["PS4_RED"] = 1, ["PS4_GREEN"] = 2, // cronus.support LED constants
+            ["LED_NONE"] = -1, ["LED_1"] = 0, ["LED_2"] = 1, ["LED_3"] = 2, ["LED_4"] = 3,
             ["LED_ID_MIN"] = 0, ["LED_ID_MAX"] = 3, ["LED_MIN"] = 0, ["LED_MAX"] = 3,
             ["LEDX_MIN"] = 0, ["LEDX_MAX"] = 255,
-            ["PIO_NONE"] = 0, ["PIO_PS3"] = 1, ["PIO_XB360"] = 2, ["PIO_WII"] = 3, ["PIO_PS4"] = 4,
+            ["PIO_NONE"] = 0, ["PIO_AUTO"] = 0, ["PIO_PS3"] = 1, ["PIO_XB360"] = 2, ["PIO_WII"] = 3, ["PIO_PS4"] = 4,
             ["PIO_XB1"] = 5, ["PIO_SWITCH"] = 6, ["PIO_PS5"] = 7, ["PIO_XBSX"] = 8,
-            ["PS4T_P1"] = 0, ["PS4T_P1X"] = 1, ["PS4T_P1Y"] = 2, ["PS4T_P2"] = 3, ["PS4T_P2X"] = 4, ["PS4T_P2Y"] = 5,
+            ["PS4T_P1"] = 1, ["PS4T_P1X"] = 2, ["PS4T_P1Y"] = 3, ["PS4T_P2"] = 16, ["PS4T_P2X"] = 32, ["PS4T_P2Y"] = 48,
         };
 
         for (int i = 1; i <= 32; i++) d[$"BITMASK_{i}"] = unchecked(1 << (i - 1));
@@ -110,7 +111,7 @@ public static class Identifiers
         foreach (var (name, glyph) in new[] { ("CROSS", 127), ("CIRCLE", 128), ("SQUARE", 129), ("TRIANGLE", 130),
                      ("UP", 131), ("DOWN", 132), ("LEFT", 133), ("RIGHT", 134), ("XB_VIEW", 135), ("XB_MENU", 136) })
             d["OLED_" + name] = glyph;
-        for (int i = 1; i <= 64; i++) d[$"SPVAR_{i}"] = i; // UNVERIFIED
+        for (int i = 1; i <= 64; i++) d[$"SPVAR_{i}"] = -32768 + (i - 1); // cronus.support memory constants
         for (int i = 0; i < TraceCount; i++) d[$"TRACE_{i + 1}"] = TRACE_1 + i;
 
         void Platform(string p, params (string name, int slot)[] specific)
@@ -125,7 +126,8 @@ public static class Identifiers
             ("PS", PS), ("OPTIONS", OPTIONS), ("R1", R1), ("R2", R2), ("R3", R3), ("L1", L1), ("L2", L2), ("L3", L3),
             ("TRIANGLE", TRIANGLE), ("CIRCLE", CIRCLE), ("CROSS", CROSS), ("SQUARE", SQUARE),
             ("ACCX", ACCX), ("ACCY", ACCY), ("ACCZ", ACCZ), ("GYROX", GYROX), ("GYROY", GYROY), ("GYROZ", GYROZ),
-            ("TOUCH", TOUCH), ("TOUCHX", TOUCHX), ("TOUCHY", TOUCHY),
+            ("TOUCH", TOUCH), ("FINGER1X", FINGER1X), ("FINGER1Y", FINGER1Y), ("FINGER1", FINGER1),
+            ("FINGER2X", FINGER2X), ("FINGER2Y", FINGER2Y), ("FINGER2", FINGER2),
         };
         Platform("PS4_", sony.Append(("SHARE", SHARE)).ToArray());
         Platform("PS5_", sony.Append(("CREATE", SHARE)).Append(("SHARE", SHARE)).ToArray());
@@ -138,6 +140,9 @@ public static class Identifiers
             ("LB", L1), ("LT", L2), ("LS", L3), ("Y", TRIANGLE), ("B", CIRCLE), ("A", CROSS), ("X", SQUARE));
         Platform("SWI_", ("HOME", PS), ("MINUS", SHARE), ("PLUS", OPTIONS), ("R", R1), ("ZR", R2), ("RS", R3),
             ("L", L1), ("ZL", L2), ("LS", L3), ("X", TRIANGLE), ("A", CIRCLE), ("B", CROSS), ("Y", SQUARE));
+        // Published tables override every inferred value above (guide.cronus.support, PublishedConstants.cs).
+        foreach (var (name, value) in PublishedConstants.All) d[name] = value;
+
         // published wheel table
         foreach (var (n, v) in new[] { ("PS", 0), ("SELECT", 1), ("START", 2), ("RPADDLE", 3), ("R2", 4), ("R3", 5),
                      ("LPADDLE", 6), ("L2", 7), ("L3", 8), ("GAS", 9), ("STEERING", 11), ("BRAKE", 12), ("UP", 13),
